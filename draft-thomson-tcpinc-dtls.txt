@@ -71,7 +71,7 @@ Table of Contents
      4.2.  TCP Header Construction . . . . . . . . . . . . . . . . .   6
      4.3.  Forbid NAPT . . . . . . . . . . . . . . . . . . . . . . .   7
    5.  DTLS Role Selection . . . . . . . . . . . . . . . . . . . . .   7
-   6.  Design Characteristics  . . . . . . . . . . . . . . . . . . .   8
+   6.  Design Characteristics  . . . . . . . . . . . . . . . . . . .   7
      6.1.  Zero Length DTLS Data . . . . . . . . . . . . . . . . . .   8
      6.2.  Unauthenticated Acknowledgments . . . . . . . . . . . . .   8
      6.3.  Interaction with DTLS Replay Protection . . . . . . . . .   8
@@ -80,15 +80,15 @@ Table of Contents
      6.6.  Cipher Suite Selection  . . . . . . . . . . . . . . . . .   9
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
      7.1.  NAPT  . . . . . . . . . . . . . . . . . . . . . . . . . .   9
-     7.2.  Acknowledgments and Congestion Window Protection  . . . .  10
+     7.2.  Acknowledgments and Congestion Window Protection  . . . .   9
      7.3.  Traffic Redirection . . . . . . . . . . . . . . . . . . .  10
      7.4.  Peer Authentication . . . . . . . . . . . . . . . . . . .  10
    8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  10
      8.1.  Registration of DTLS Record Protection Option Kind  . . .  10
-     8.2.  Registry for DTLS Record Protection Flags . . . . . . . .  11
+     8.2.  Registry for DTLS Record Protection Flags . . . . . . . .  10
    9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  11
      9.1.  Normative References  . . . . . . . . . . . . . . . . . .  11
-     9.2.  Informative References  . . . . . . . . . . . . . . . . .  12
+     9.2.  Informative References  . . . . . . . . . . . . . . . . .  11
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  12
 
 1.  Introduction
@@ -245,8 +245,7 @@ Internet-Draft                DTLS for TCP                     June 2014
    and pseudoheader.  The length of this packet is based on the length
    of the DTLS record, with the value of protected TCP options being
    extracted from the TCP header of the segment that carries the first
-   byte of the DTLS record (or should this be last byte?  pick one, I
-   guess?).
+   byte of the DTLS record.
 
    In TLS and DTLS, the additional data that is protected by the AEAD
    function is [RFC5246]:
@@ -274,6 +273,7 @@ Internet-Draft                DTLS for TCP                     June 2014
    pseudoheader_v4 = source_address(32) + destination_address(32) +
                       zero(8) + protocol(8) + tcp_length(16)
 
+   Or for IPv6 [RFC2460]:
 
 
 
@@ -281,8 +281,6 @@ Thomson                 Expires December 29, 2014               [Page 5]
 
 Internet-Draft                DTLS for TCP                     June 2014
 
-
-   Or for IPv6 [RFC2460]:
 
    pseudoheader_v6 = source_address(128) + destination_address(128) +
                      tcp_length(32) + zero(24) + protocol(8)
@@ -329,7 +327,9 @@ Internet-Draft                DTLS for TCP                     June 2014
 
    urgent_pointer:  The urgent pointer is protected.
 
-
+   options:  The set of options that are included under protection are
+      included.  Options that are not protected are removed.
+      Section 3.2 described how options are selected for protection.
 
 
 
@@ -338,9 +338,6 @@ Thomson                 Expires December 29, 2014               [Page 6]
 Internet-Draft                DTLS for TCP                     June 2014
 
 
-   options:  The set of options that are included under protection are
-      included.  Options that are not protected are removed.
-      Section 3.2 described how options are selected for protection.
       The list of options is terminated with an option of kind 0x0 and
       padding to a multiple of 32 bits with zero octets.
 
@@ -382,7 +379,10 @@ Internet-Draft                DTLS for TCP                     June 2014
    handshake option, role allocations are not determined until a
    ClientHello message is exchanged.
 
+6.  Design Characteristics
 
+   This section outlines a number of considerations that allow this
+   protocol to actually be implemented.
 
 
 
@@ -393,11 +393,6 @@ Thomson                 Expires December 29, 2014               [Page 7]
 
 Internet-Draft                DTLS for TCP                     June 2014
 
-
-6.  Design Characteristics
-
-   This section outlines a number of considerations that allow this
-   protocol to actually be implemented.
 
 6.1.  Zero Length DTLS Data
 
@@ -440,7 +435,12 @@ Internet-Draft                DTLS for TCP                     June 2014
    byte from just prior to the start of the congestion window.  These
    segments are discarded without being validated.
 
+   This differs from [I-D.bittau-tcp-crypt], which protects keep-alive
+   segments.  Protection ensures that an attacker is unable to prolong
+   the lifetime of a connection that is otherwise unwanted.
 
+   Since an unwanted connection can be terminated with an authenticated
+   segment that bears a FIN or RST bit, this concern is unwarranted.
 
 
 
@@ -449,13 +449,6 @@ Thomson                 Expires December 29, 2014               [Page 8]
 
 Internet-Draft                DTLS for TCP                     June 2014
 
-
-   This differs from [I-D.bittau-tcp-crypt], which protects keep-alive
-   segments.  Protection ensures that an attacker is unable to prolong
-   the lifetime of a connection that is otherwise unwanted.
-
-   Since an unwanted connection can be terminated with an authenticated
-   segment that bears a FIN or RST bit, this concern is unwarranted.
 
 6.5.  Unprotected RST Segments
 
@@ -494,18 +487,6 @@ Internet-Draft                DTLS for TCP                     June 2014
    path, this protection might be used.  Of course, any protection this
    provides is trivially circumvented by an on-path attacker.
 
-
-
-
-
-
-
-
-Thomson                 Expires December 29, 2014               [Page 9]
-
-Internet-Draft                DTLS for TCP                     June 2014
-
-
 7.2.  Acknowledgments and Congestion Window Protection
 
    This design permits a middlebox to generate acknowledgments and to
@@ -517,6 +498,13 @@ Internet-Draft                DTLS for TCP                     June 2014
    be suppressed by sending inflated acknowledgment sequence numbers.
 
    These are options that are already available to an on-path attacker.
+
+
+
+Thomson                 Expires December 29, 2014               [Page 9]
+
+Internet-Draft                DTLS for TCP                     June 2014
+
 
 7.3.  Traffic Redirection
 
@@ -555,13 +543,6 @@ Internet-Draft                DTLS for TCP                     June 2014
 
    The format of this option is described in Section 3
 
-
-
-Thomson                 Expires December 29, 2014              [Page 10]
-
-Internet-Draft                DTLS for TCP                     June 2014
-
-
 8.2.  Registry for DTLS Record Protection Flags
 
    IANA will maintain a registry of "TCP DTLS Record Protection Flags"
@@ -573,6 +554,13 @@ Internet-Draft                DTLS for TCP                     June 2014
    [RFC5226], with the following information:
 
    Bit Number:  The bit number being assigned
+
+
+
+Thomson                 Expires December 29, 2014              [Page 10]
+
+Internet-Draft                DTLS for TCP                     June 2014
+
 
    Purpose:  A brief description of the feature.
 
@@ -611,13 +599,6 @@ Internet-Draft                DTLS for TCP                     June 2014
               IANA Considerations Section in RFCs", BCP 26, RFC 5226,
               May 2008.
 
-
-
-Thomson                 Expires December 29, 2014              [Page 11]
-
-Internet-Draft                DTLS for TCP                     June 2014
-
-
    [RFC5246]  Dierks, T. and E. Rescorla, "The Transport Layer Security
               (TLS) Protocol Version 1.2", RFC 5246, August 2008.
 
@@ -625,6 +606,17 @@ Internet-Draft                DTLS for TCP                     June 2014
               Security Version 1.2", RFC 6347, January 2012.
 
 9.2.  Informative References
+
+
+
+
+
+
+
+Thomson                 Expires December 29, 2014              [Page 11]
+
+Internet-Draft                DTLS for TCP                     June 2014
+
 
    [I-D.bellovin-tcpsec]
               Bellovin, S., "Problem Statement and Requirements for a
@@ -657,6 +649,14 @@ Author's Address
    Mozilla
 
    Email: martin.thomson@gmail.com
+
+
+
+
+
+
+
+
 
 
 
