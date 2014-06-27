@@ -8,7 +8,7 @@ This is a proposal for using DTLS to opportunistically secure TCP.
 
 # Contributing
 
-This is a personal draft.
+This is a personal draft, it's not official.
 
 1. The best way to provide feedback (editorial or design) and ask questions is
 sending an e-mail to either the authors or the [TCPINC mailing
