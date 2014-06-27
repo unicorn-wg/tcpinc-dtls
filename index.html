@@ -1,0 +1,885 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+
+  <title>A DTLS Extension for TCP</title>
+
+  <style type="text/css" title="Xml2Rfc (sans serif)">
+  /*<![CDATA[*/
+	  a {
+	  text-decoration: none;
+	  }
+      /* info code from SantaKlauss at http://www.madaboutstyle.com/tooltip2.html */
+      a.info {
+          /* This is the key. */
+          position: relative;
+          z-index: 24;
+          text-decoration: none;
+      }
+      a.info:hover {
+          z-index: 25;
+          color: #FFF; background-color: #900;
+      }
+      a.info span { display: none; }
+      a.info:hover span.info {
+          /* The span will display just on :hover state. */
+          display: block;
+          position: absolute;
+          font-size: smaller;
+          top: 2em; left: -5em; width: 15em;
+          padding: 2px; border: 1px solid #333;
+          color: #900; background-color: #EEE;
+          text-align: left;
+      }
+	  a.smpl {
+	  color: black;
+	  }
+	  a:hover {
+	  text-decoration: underline;
+	  }
+	  a:active {
+	  text-decoration: underline;
+	  }
+	  address {
+	  margin-top: 1em;
+	  margin-left: 2em;
+	  font-style: normal;
+	  }
+	  body {
+	  color: black;
+	  font-family: verdana, helvetica, arial, sans-serif;
+	  font-size: 10pt;
+	  max-width: 55em;
+	  
+	  }
+	  cite {
+	  font-style: normal;
+	  }
+	  dd {
+	  margin-right: 2em;
+	  }
+	  dl {
+	  margin-left: 2em;
+	  }
+	
+	  ul.empty {
+	  list-style-type: none;
+	  }
+	  ul.empty li {
+	  margin-top: .5em;
+	  }
+	  dl p {
+	  margin-left: 0em;
+	  }
+	  dt {
+	  margin-top: .5em;
+	  }
+	  h1 {
+	  font-size: 14pt;
+	  line-height: 21pt;
+	  page-break-after: avoid;
+	  }
+	  h1.np {
+	  page-break-before: always;
+	  }
+	  h1 a {
+	  color: #333333;
+	  }
+	  h2 {
+	  font-size: 12pt;
+	  line-height: 15pt;
+	  page-break-after: avoid;
+	  }
+	  h3, h4, h5, h6 {
+	  font-size: 10pt;
+	  page-break-after: avoid;
+	  }
+	  h2 a, h3 a, h4 a, h5 a, h6 a {
+	  color: black;
+	  }
+	  img {
+	  margin-left: 3em;
+	  }
+	  li {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol p {
+	  margin-left: 0em;
+	  }
+	  p {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  pre {
+	  margin-left: 3em;
+	  background-color: lightyellow;
+	  padding: .25em;
+	  }
+	  pre.text2 {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f0f0f0;
+	  width: 69em;
+	  }
+	  pre.inline {
+	  background-color: white;
+	  padding: 0em;
+	  }
+	  pre.text {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  width: 69em;
+	  }
+	  pre.drawing {
+	  border-style: solid;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  padding: 2em;
+	  }
+	  table {
+	  margin-left: 2em;
+	  }
+	  table.tt {
+	  vertical-align: top;
+	  }
+	  table.full {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.headers {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.tt td {
+	  vertical-align: top;
+	  }
+	  table.full td {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.tt th {
+	  vertical-align: top;
+	  }
+	  table.full th {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.headers th {
+	  border-style: none none inset none;
+	  border-width: 1px;
+	  }
+	  table.left {
+	  margin-right: auto;
+	  }
+	  table.right {
+	  margin-left: auto;
+	  }
+	  table.center {
+	  margin-left: auto;
+	  margin-right: auto;
+	  }
+	  caption {
+	  caption-side: bottom;
+	  font-weight: bold;
+	  font-size: 9pt;
+	  margin-top: .5em;
+	  }
+	
+	  table.header {
+	  border-spacing: 1px;
+	  width: 95%;
+	  font-size: 10pt;
+	  color: white;
+	  }
+	  td.top {
+	  vertical-align: top;
+	  }
+	  td.topnowrap {
+	  vertical-align: top;
+	  white-space: nowrap; 
+	  }
+	  table.header td {
+	  background-color: gray;
+	  width: 50%;
+	  }
+	  table.header a {
+	  color: white;
+	  }
+	  td.reference {
+	  vertical-align: top;
+	  white-space: nowrap;
+	  padding-right: 1em;
+	  }
+	  thead {
+	  display:table-header-group;
+	  }
+	  ul.toc, ul.toc ul {
+	  list-style: none;
+	  margin-left: 1.5em;
+	  margin-right: 0em;
+	  padding-left: 0em;
+	  }
+	  ul.toc li {
+	  line-height: 150%;
+	  font-weight: bold;
+	  font-size: 10pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  ul.toc li li {
+	  line-height: normal;
+	  font-weight: normal;
+	  font-size: 9pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  li.excluded {
+	  font-size: 0pt;
+	  }
+	  ul p {
+	  margin-left: 0em;
+	  }
+	
+	  .comment {
+	  background-color: yellow;
+	  }
+	  .center {
+	  text-align: center;
+	  }
+	  .error {
+	  color: red;
+	  font-style: italic;
+	  font-weight: bold;
+	  }
+	  .figure {
+	  font-weight: bold;
+	  text-align: center;
+	  font-size: 9pt;
+	  }
+	  .filename {
+	  color: #333333;
+	  font-weight: bold;
+	  font-size: 12pt;
+	  line-height: 21pt;
+	  text-align: center;
+	  }
+	  .fn {
+	  font-weight: bold;
+	  }
+	  .hidden {
+	  display: none;
+	  }
+	  .left {
+	  text-align: left;
+	  }
+	  .right {
+	  text-align: right;
+	  }
+	  .title {
+	  color: #990000;
+	  font-size: 18pt;
+	  line-height: 18pt;
+	  font-weight: bold;
+	  text-align: center;
+	  margin-top: 36pt;
+	  }
+	  .vcardline {
+	  display: block;
+	  }
+	  .warning {
+	  font-size: 14pt;
+	  background-color: yellow;
+	  }
+	
+	
+	  @media print {
+	  .noprint {
+		display: none;
+	  }
+	
+	  a {
+		color: black;
+		text-decoration: none;
+	  }
+	
+	  table.header {
+		width: 90%;
+	  }
+	
+	  td.header {
+		width: 50%;
+		color: black;
+		background-color: white;
+		vertical-align: top;
+		font-size: 12pt;
+	  }
+	
+	  ul.toc a::after {
+		content: leader('.') target-counter(attr(href), page);
+	  }
+	
+	  ul.ind li li a {
+		content: target-counter(attr(href), page);
+	  }
+	
+	  .print2col {
+		column-count: 2;
+		-moz-column-count: 2;
+		column-fill: auto;
+	  }
+	  }
+	
+	  @page {
+	  @top-left {
+		   content: "Internet-Draft"; 
+	  } 
+	  @top-right {
+		   content: "December 2010"; 
+	  } 
+	  @top-center {
+		   content: "Abbreviated Title";
+	  } 
+	  @bottom-left {
+		   content: "Doe"; 
+	  } 
+	  @bottom-center {
+		   content: "Expires June 2011"; 
+	  } 
+	  @bottom-right {
+		   content: "[Page " counter(page) "]"; 
+	  } 
+	  }
+	
+	  @page:first { 
+		@top-left {
+		  content: normal;
+		}
+		@top-right {
+		  content: normal;
+		}
+		@top-center {
+		  content: normal;
+		}
+	  }
+  /*]]>*/
+  </style>
+  <style type="text/css">
+@viewport {
+  zoom: 1.0;
+  width: extend-to-zoom;
+}
+
+@-ms-viewport {
+  width: extend-to-zoom;
+  zoom: 1.0;
+}
+
+body {
+  font: 11pt cambria, helvetica, arial, sans-serif;
+  font-size-adjust: 0.5;
+  line-height: 130%;
+  margin: 1em auto;
+  max-width: 700px;
+}
+
+.title, .filename, h1, h2, h3, h4 {
+  font-family: candara, helvetica, arial, sans-serif;
+  font-size-adjust: 0.5;
+}
+.title { font-size: 150%; }
+h1 { font-size: 130%; }
+h2 { font-size: 120%; }
+h3, h4 { font-size: 110%; }
+ul.toc >li { font-size: 95%; }
+ul.toc >li >ul, .figure, caption { font-size: 90%; }
+
+table {
+  margin-left: 0em;
+}
+table.header {
+  width: 100%;
+}
+
+table.header td {
+  background-color: inherit;
+  color: black;
+}
+
+samp, tt, code, pre {
+  font: 11pt consolas, monospace;
+  font-size-adjust: none;
+}
+
+pre.text, pre.text2 {
+  width: 90%;
+}
+
+dt {
+  float: left; clear: left;
+  margin: 0.5em 0.5em 0 0;
+}
+dt:first-child {
+  margin-top: 0;
+}
+dd {
+  margin: 0.5em 0 0 2em;
+}
+dd p, dd ul {
+  margin-top: 0; margin-bottom: 0;
+}
+dd *+p {
+  margin-top: 0.5em;
+}
+
+ol, ul {
+  padding: 0;
+  margin: 0.5em 0 0.5em 2em;
+}
+ul.toc, ul.toc ul { 
+  margin: 0 0 0 1.5em;
+}
+ul.toc a:first-child { 
+  display: inline-block; 
+  min-width: 1.2em;
+}  </style>
+
+  <link href="#rfc.toc" rel="Contents"/>
+<link href="#rfc.section.1" rel="Chapter" title="1 Introduction"/>
+<link href="#rfc.section.1.1" rel="Chapter" title="1.1 Terminology"/>
+<link href="#rfc.section.2" rel="Chapter" title="2 DTLS Layering"/>
+<link href="#rfc.section.3" rel="Chapter" title="3 DTLS Record Protection Option"/>
+<link href="#rfc.section.3.1" rel="Chapter" title="3.1 DTLS Record Protection Flags"/>
+<link href="#rfc.section.3.2" rel="Chapter" title="3.2 Protection Option Kinds"/>
+<link href="#rfc.section.4" rel="Chapter" title="4 Modified DTLS AEAD Operation"/>
+<link href="#rfc.section.4.1" rel="Chapter" title="4.1 TCP Pseudoheader Construction"/>
+<link href="#rfc.section.4.2" rel="Chapter" title="4.2 TCP Header Construction"/>
+<link href="#rfc.section.4.3" rel="Chapter" title="4.3 Forbid NAPT"/>
+<link href="#rfc.section.5" rel="Chapter" title="5 DTLS Role Selection"/>
+<link href="#rfc.section.6" rel="Chapter" title="6 Design Characteristics"/>
+<link href="#rfc.section.6.1" rel="Chapter" title="6.1 Zero Length DTLS Data"/>
+<link href="#rfc.section.6.2" rel="Chapter" title="6.2 Unauthenticated Acknowledgments"/>
+<link href="#rfc.section.6.3" rel="Chapter" title="6.3 Interaction with DTLS Replay Protection"/>
+<link href="#rfc.section.6.4" rel="Chapter" title="6.4 TCP Keep-Alive"/>
+<link href="#rfc.section.6.5" rel="Chapter" title="6.5 Unprotected RST Segments"/>
+<link href="#rfc.section.6.6" rel="Chapter" title="6.6 Cipher Suite Selection"/>
+<link href="#rfc.section.7" rel="Chapter" title="7 Security Considerations"/>
+<link href="#rfc.section.7.1" rel="Chapter" title="7.1 NAPT"/>
+<link href="#rfc.section.7.2" rel="Chapter" title="7.2 Acknowledgments and Congestion Window Protection"/>
+<link href="#rfc.section.7.3" rel="Chapter" title="7.3 Traffic Redirection"/>
+<link href="#rfc.section.7.4" rel="Chapter" title="7.4 Peer Authentication"/>
+<link href="#rfc.section.8" rel="Chapter" title="8 IANA Considerations"/>
+<link href="#rfc.section.8.1" rel="Chapter" title="8.1 Registration of DTLS Record Protection Option Kind"/>
+<link href="#rfc.section.8.2" rel="Chapter" title="8.2 Registry for DTLS Record Protection Flags"/>
+<link href="#rfc.references" rel="Chapter" title="9 References"/>
+<link href="#rfc.references.1" rel="Chapter" title="9.1 Normative References"/>
+<link href="#rfc.references.2" rel="Chapter" title="9.2 Informative References"/>
+<link href="#rfc.authors" rel="Chapter"/>
+
+
+  <meta name="generator" content="xml2rfc version 2.4.8 - http://tools.ietf.org/tools/xml2rfc" />
+  <link rel="schema.dct" href="http://purl.org/dc/terms/" />
+
+  <meta name="dct.creator" content="Thomson, M." />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-thomson-tcpinc-dtls-latest" />
+  <meta name="dct.issued" scheme="ISO8601" content="2014-6-27" />
+  <meta name="dct.abstract" content="Opportunistic security is provided for TCP using a modified DTLS." />
+  <meta name="description" content="Opportunistic security is provided for TCP using a modified DTLS." />
+
+</head>
+
+<body>
+
+  <table class="header">
+    <tbody>
+    
+    	<tr>
+  <td class="left">TCPINC</td>
+  <td class="right">M. Thomson</td>
+</tr>
+<tr>
+  <td class="left">Internet-Draft</td>
+  <td class="right">Mozilla</td>
+</tr>
+<tr>
+  <td class="left">Intended status: Standards Track</td>
+  <td class="right">June 27, 2014</td>
+</tr>
+<tr>
+  <td class="left">Expires: December 29, 2014</td>
+  <td class="right"></td>
+</tr>
+
+    	
+    </tbody>
+  </table>
+
+  <p class="title">A DTLS Extension for TCP<br />
+  <span class="filename">draft-thomson-tcpinc-dtls-latest</span></p>
+  
+  <h1 id="rfc.abstract">
+  <a href="#rfc.abstract">Abstract</a>
+</h1>
+<p>Opportunistic security is provided for TCP using a modified DTLS.</p>
+<h1 id="rfc.status">
+  <a href="#rfc.status">Status of This Memo</a>
+</h1>
+<p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
+<p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
+<p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
+<p>This Internet-Draft will expire on December 29, 2014.</p>
+<h1 id="rfc.copyrightnotice">
+  <a href="#rfc.copyrightnotice">Copyright Notice</a>
+</h1>
+<p>Copyright (c) 2014 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
+<p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
+
+  
+  <hr class="noprint" />
+  <h1 class="np" id="rfc.toc"><a href="#rfc.toc">Table of Contents</a></h1>
+  <ul class="toc">
+
+  	<li>1.   <a href="#rfc.section.1">Introduction</a></li>
+<li>1.1.   <a href="#rfc.section.1.1">Terminology</a></li>
+<li>2.   <a href="#rfc.section.2">DTLS Layering</a></li>
+<li>3.   <a href="#rfc.section.3">DTLS Record Protection Option</a></li>
+<li>3.1.   <a href="#rfc.section.3.1">DTLS Record Protection Flags</a></li>
+<li>3.2.   <a href="#rfc.section.3.2">Protection Option Kinds</a></li>
+<li>4.   <a href="#rfc.section.4">Modified DTLS AEAD Operation</a></li>
+<li>4.1.   <a href="#rfc.section.4.1">TCP Pseudoheader Construction</a></li>
+<li>4.2.   <a href="#rfc.section.4.2">TCP Header Construction</a></li>
+<li>4.3.   <a href="#rfc.section.4.3">Forbid NAPT</a></li>
+<li>5.   <a href="#rfc.section.5">DTLS Role Selection</a></li>
+<li>6.   <a href="#rfc.section.6">Design Characteristics</a></li>
+<li>6.1.   <a href="#rfc.section.6.1">Zero Length DTLS Data</a></li>
+<li>6.2.   <a href="#rfc.section.6.2">Unauthenticated Acknowledgments</a></li>
+<li>6.3.   <a href="#rfc.section.6.3">Interaction with DTLS Replay Protection</a></li>
+<li>6.4.   <a href="#rfc.section.6.4">TCP Keep-Alive</a></li>
+<li>6.5.   <a href="#rfc.section.6.5">Unprotected RST Segments</a></li>
+<li>6.6.   <a href="#rfc.section.6.6">Cipher Suite Selection</a></li>
+<li>7.   <a href="#rfc.section.7">Security Considerations</a></li>
+<li>7.1.   <a href="#rfc.section.7.1">NAPT</a></li>
+<li>7.2.   <a href="#rfc.section.7.2">Acknowledgments and Congestion Window Protection</a></li>
+<li>7.3.   <a href="#rfc.section.7.3">Traffic Redirection</a></li>
+<li>7.4.   <a href="#rfc.section.7.4">Peer Authentication</a></li>
+<li>8.   <a href="#rfc.section.8">IANA Considerations</a></li>
+<li>8.1.   <a href="#rfc.section.8.1">Registration of DTLS Record Protection Option Kind</a></li>
+<li>8.2.   <a href="#rfc.section.8.2">Registry for DTLS Record Protection Flags</a></li>
+<li>9.   <a href="#rfc.references">References</a></li>
+<li>9.1.   <a href="#rfc.references.1">Normative References</a></li>
+<li>9.2.   <a href="#rfc.references.2">Informative References</a></li>
+<li><a href="#rfc.authors">Author's Address</a></li>
+
+
+  </ul>
+
+  <h1 id="rfc.section.1"><a href="#rfc.section.1">1.</a> <a href="#intro" id="intro">Introduction</a></h1>
+<p id="rfc.section.1.p.1">TCP <a href="#RFC0793">[RFC0793]</a> is a widely used protocol.</p>
+<p id="rfc.section.1.p.2">As part of a general &#8220;secure all the things&#8221; effort, the IETF is defining opportunistic security options for all the protocols it maintains.  Opportunistic security ensures that we accelerate the eventual heat death of the universe, and discourages certain classes of attack <a href="#RFC7258">[RFC7258]</a>.</p>
+<p id="rfc.section.1.p.3">Opportunistic approaches are the most practical way to ensure wider deployment of security because they don&#8217;t immediately depend on solving hard problems like authentication.</p>
+<p id="rfc.section.1.p.4">In that spirit, reusing existing security protocols reduces the cost to implement, deploy and analyse new protocol modifications.  TLS <a href="#RFC5246">[RFC5246]</a> and DTLS <a href="#RFC6347">[RFC6347]</a> represent the current best in class security protocols.</p>
+<p id="rfc.section.1.p.5">This specification defines how DTLS can be used to protect TCP.  This addresses the requirements outlined in <a href="#I-D.bellovin-tcpsec">[I-D.bellovin-tcpsec]</a>.  A small modification to the TCP record layer allows for the protection of the TCP pseudo header, with an allowance for NAPT (editor: why does Bellovin even suggest that protection of IP/port is even feasible?) and per-option opt-out.</p>
+<p id="rfc.section.1.p.6">In addition, all the features of DTLS are made available:</p>
+<p/>
+
+<ul>
+  <li>Cipher suite negotiation and agility</li>
+  <li>Years of security analysis</li>
+  <li>Downgrade protection in the handshake</li>
+  <li>Session bindings</li>
+  <li>Optional peer authentication</li>
+  <li>A range of available extensions</li>
+</ul>
+<p id="rfc.section.1.p.8">In addition to this, new upgrades to DTLS can be trivially added.  Thus, improvements to algorithms or the DTLS handshake are entirely portable.</p>
+<h1 id="rfc.section.1.1"><a href="#rfc.section.1.1">1.1.</a> <a href="#terminology" id="terminology">Terminology</a></h1>
+<p id="rfc.section.1.1.p.1">The usual. <a href="#RFC2119">[RFC2119]</a> explains what those are.</p>
+<h1 id="rfc.section.2"><a href="#rfc.section.2">2.</a> <a href="#overview" id="overview">DTLS Layering</a></h1>
+<p id="rfc.section.2.p.1">This extension to TCP places a continuous sequence of DTLS records as the payload of TCP.  These records provide confidentiality and integrity protection for their content, plus integrity protection for the TCP header and pseudoheader.</p>
+<p id="rfc.section.2.p.2">An option negotiates the use of this extension.  This option is added to the SYN message to indicate support, and to the ACK message to indicate acceptance.</p>
+<p id="rfc.section.2.p.3">Once enabled, all DTLS records, including handshake messages, are carried as TCP data.  The data for the protected TCP stream is the concatenated content of DTLS messages.</p>
+<p id="rfc.section.2.p.4">TCP clients are automatically entered into the DTLS client role; and TCP servers automatically enter the DTLS server role.  Where TCP simultaneous open is used, a lottery determines the roles <a href="#simultaneous-open">Section 5</a>.</p>
+<h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#option" id="option">DTLS Record Protection Option</a></h1>
+<p id="rfc.section.3.p.1">This option is used to negotiate the use of DTLS.  It is assigned a TCP option kind of 0xTBD <a href="#iana">Section 8</a>.</p>
+<p id="rfc.section.3.p.2">The format of the DTLS record protection option is a single octet flags field, followed by a list of protected option kinds.</p>
+<h1 id="rfc.section.3.1"><a href="#rfc.section.3.1">3.1.</a> <a href="#flags" id="flags">DTLS Record Protection Flags</a></h1>
+<p id="rfc.section.3.1.p.1">The content of the flags field is a bit pattern of features.  The following features are defined in this document:</p>
+<p/>
+
+<ul>
+  <li>FORBID_NAPT: Bit 0 (the first and most significant bit of the first octet) being set indicates that DTLS protection is to be extended to addressing elements, see <a href="#forbid-napt">Section 4.3</a>.</li>
+</ul>
+<p id="rfc.section.3.1.p.3">A client can set these bits to request the defined alterations to the protocol.  A server can accept these alterations by including these in its ACK message, or it can reject the alterations by clearing the bit.</p>
+<p id="rfc.section.3.1.p.4">All bits in this option MUST be set to zero unless they are explicitly understood.  A sender MUST remove trailing octets that have all zero values from the option.</p>
+<p id="rfc.section.3.1.p.5">An IANA registry is established to maintain these bits <a href="#iana-flags">Section 8.2</a>.</p>
+<h1 id="rfc.section.3.2"><a href="#rfc.section.3.2">3.2.</a> <a href="#protected-options" id="protected-options">Protection Option Kinds</a></h1>
+<p id="rfc.section.3.2.p.1">The DTLS record protection option includes a list of the TCP options that are covered by DTLS integrity protection, each occupying a single octet.  Just as TCP options are terminated by a zero octet, this list is terminated by a zero value.</p>
+<p id="rfc.section.3.2.p.2">Any data following this list is reserved for extension and MUST be ignored.</p>
+<h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#modified-dtls-aead-operation" id="modified-dtls-aead-operation">Modified DTLS AEAD Operation</a></h1>
+<p id="rfc.section.4.p.1">This mechanism MUST be used with an Authenticated Encryption with Additional Data (AEAD) mode.  The DTLS record layer is modified to provide integrity protection for the TCP pseudoheader and header by including this as part of the additional data.</p>
+<p id="rfc.section.4.p.2">An important characteristic of this is that records are protected as though each individual DTLS record is part of a unique TCP segment.  This ensures that repacketization by middleboxes does not result in records being marked as invalid.</p>
+<p id="rfc.section.4.p.3">TCP middleboxes can, and sometimes do, split or coalesce TCP segments.  This affects the calculation of the authenticated data that is input to the AEAD protection.</p>
+<p id="rfc.section.4.p.4">To prevent this from invalidating integrity checks unnecessarily, the associated data passed to the AEAD algorithm contains a modified value of the TCP header and pseudoheader.</p>
+<p id="rfc.section.4.p.5">For a sender that transmits a single DTLS record in each TCP segment with only protected TCP options, this demands no additional calculation.  However, a receiver needs to construct the TCP header and pseudoheader.  The length of this packet is based on the length of the DTLS record, with the value of protected TCP options being extracted from the TCP header of the segment that carries the first byte of the DTLS record (or should this be last byte?  pick one, I guess?).</p>
+<p id="rfc.section.4.p.6">In TLS and DTLS, the additional data that is protected by the AEAD function is <a href="#RFC5246">[RFC5246]</a>:</p>
+<pre>
+additional_data = seq_num + TLSCompressed.type +
+                  TLSCompressed.version + TLSCompressed.length;
+</pre>
+<p id="rfc.section.4.p.7">where &#8220;+&#8221; denotes concatenation.</p>
+<p id="rfc.section.4.p.8">This specification expands the fields that are protected to include a constructed TCP pseudoheader and header as follows:</p>
+<pre>
+tcp_additional_data = pseudoheader + tcp_header +
+                      additional_data;
+</pre>
+<p id="rfc.section.4.p.9">Construction of the <samp>pseudoheader</samp> and <samp>tcp_header</samp> portions of the authenticated data are described in the following sections.</p>
+<h1 id="rfc.section.4.1"><a href="#rfc.section.4.1">4.1.</a> <a href="#pseudoheader" id="pseudoheader">TCP Pseudoheader Construction</a></h1>
+<p id="rfc.section.4.1.p.1">The pseudoheader that is used for AEAD input depends on the IP version in use, for IPv4 <a href="#RFC0793">[RFC0793]</a>, with length of fields in bits shown in parentheses:</p>
+<pre>
+pseudoheader_v4 = source_address(32) + destination_address(32) +
+                   zero(8) + protocol(8) + tcp_length(16)
+</pre>
+<p id="rfc.section.4.1.p.2">Or for IPv6 <a href="#RFC2460">[RFC2460]</a>:</p>
+<pre>
+pseudoheader_v6 = source_address(128) + destination_address(128) +
+                  tcp_length(32) + zero(24) + protocol(8)
+</pre>
+<p id="rfc.section.4.1.p.3">In both cases, the value for <samp>tcp_length</samp> is derived by constructing a TCP header as described in <a href="#tcp-header">Section 4.2</a>.</p>
+<p id="rfc.section.4.1.p.4">The values for <samp>source_address</samp> and <samp>destination_address</samp> are replaced with zero bits, unless the FORBID_NAPT flag is enabled.  Setting these values to zero permits the use of NAPT devices.</p>
+<h1 id="rfc.section.4.2"><a href="#rfc.section.4.2">4.2.</a> <a href="#tcp-header" id="tcp-header">TCP Header Construction</a></h1>
+<p id="rfc.section.4.2.p.1">In order to ensure that the protocol is robust in the presence of middleboxes, unprotected TCP options are removed from the TCP header before applying protection.</p>
+<pre>
+tcp_header = source_port(16) + destination_port(16) +
+             sequence_number(32) + acknowledgement_number(32) +
+             data_offset(4) + flags(12) + window(16) +
+             checksum(16) + urgent_pointer(16) + options(?)
+</pre>
+<p id="rfc.section.4.2.p.2">The following construction rules apply:</p>
+<p/>
+
+<dl>
+  <dt>source_port and destination_port:</dt>
+  <dd style="margin-left: 8">These fields MUST be replaced with zero bits unless the FORBID_NAPT flag is enabled for the session.  Setting these values to zero permits the use of port translation.</dd>
+  <dt>sequence_number:</dt>
+  <dd style="margin-left: 8">This field MUST be set to the sequence number corresponding to the first octet of the DTLS record.</dd>
+  <dt>acknowledgement_number and window:</dt>
+  <dd style="margin-left: 8">These fields MUST be replaced with zero bits.  Removing the acknowledgement and congestion window from integrity protection does provide some opportunities to an on-path attacker <a href="#security-ack-window">Section 7.2</a>.</dd>
+  <dt>data_offset:</dt>
+  <dd style="margin-left: 8">The data offset MUST be set to the size of the modified TCP header.</dd>
+  <dt>flags:</dt>
+  <dd style="margin-left: 8">The reserved and flags part of the TCP header is protected.</dd>
+  <dt>checksum:</dt>
+  <dd style="margin-left: 8">This field MUST be replaced with zero bits, just as it is when the TCP checksum is calculated.</dd>
+  <dt>urgent_pointer:</dt>
+  <dd style="margin-left: 8">The urgent pointer is protected.</dd>
+  <dt>options:</dt>
+  <dd style="margin-left: 8">The set of options that are included under protection are included.  Options that are not protected are removed.  <a href="#protected-options">Section 3.2</a> described how options are selected for protection.  The list of options is terminated with an option of kind 0x0 and padding to a multiple of 32 bits with zero octets.</dd>
+</dl>
+<p id="rfc.section.4.2.p.4">This construction permits the addition and removal of options by middleboxes, as long as they are not in the list of options that are protected.  It also permits repacketization and acknowledgment.</p>
+<h1 id="rfc.section.4.3"><a href="#rfc.section.4.3">4.3.</a> <a href="#forbid-napt" id="forbid-napt">Forbid NAPT</a></h1>
+<p id="rfc.section.4.3.p.1">The DTLS record protection option <a href="#option">Section 3</a> contains a FORBID_NAPT bit that can be used to signal that network address and port translation (NAPT) is forbidden.</p>
+<p id="rfc.section.4.3.p.2">If the FORBID_NAPT option is not set, addressing information is replaced with zero values.  This is the IP (v4 or v6) address fields in the pseudoheader, and the source and destination port numbers.</p>
+<p id="rfc.section.4.3.p.3">Why anyone in their right mind would do this is beyond me, but it&#8217;s in the requirements and this would seem to be sufficient to address those, albeit by making the whole mechanism more complex.</p>
+<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#simultaneous-open" id="simultaneous-open">DTLS Role Selection</a></h1>
+<p id="rfc.section.5.p.1">Ordinarily, the role of DTLS client is assumed by the peer that sends the first TCP SYN packet (the TCP client), and the role of DTLS server is assumed by the peer that responds (the TCP server).</p>
+<p id="rfc.section.5.p.2">Peers that perform a TCP simultaneous open - that is, where both peers simultaneously send SYN packets to open a connection, often to work around middlebox limitations - are assigned client and server roles in DTLS based on the following rules.</p>
+<p id="rfc.section.5.p.3">If only one peer provides a DTLS handshake in TCP fast open data <a href="#I-D.ietf-tcpm-fastopen">[I-D.ietf-tcpm-fastopen]</a>, then that peer becomes the client.</p>
+<p id="rfc.section.5.p.4">If neither or both peers provide the DTLS handshake option, then the peer that selects the numerically highest value for their ClientRandom assumes the client role.  In the absence of the DTLS handshake option, role allocations are not determined until a ClientHello message is exchanged.</p>
+<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#design-characteristics" id="design-characteristics">Design Characteristics</a></h1>
+<p id="rfc.section.6.p.1">This section outlines a number of considerations that allow this protocol to actually be implemented.</p>
+<h1 id="rfc.section.6.1"><a href="#rfc.section.6.1">6.1.</a> <a href="#zero-length-dtls-data" id="zero-length-dtls-data">Zero Length DTLS Data</a></h1>
+<p><a href="#RFC5246">[RFC5246]</a>, Section 6.2 notes that the TLS record layer protects non-zero length blocks.  This use of DTLS requires that frames be permitted to be empty, relying solely on integrity protection of the associated data.</p>
+<p/>
+
+<ul class="empty">
+  <li>This does not mean that the TCP segment contains no data, since it will contain the DTLS record header (including the explicit nonce, if any, and any bits produced by the AEAD cipher to ensure integrity).</li>
+</ul>
+<h1 id="rfc.section.6.2"><a href="#rfc.section.6.2">6.2.</a> <a href="#unauthenticated-acknowledgments" id="unauthenticated-acknowledgments">Unauthenticated Acknowledgments</a></h1>
+<p id="rfc.section.6.2.p.1">TCP segments that only acknowledge receipt of data, or update the receive window do not require authentication, since the corresponding fields are not protected.  These frames can be accepted and processed, as long as only the receive window is updated.</p>
+<p id="rfc.section.6.2.p.2">By the same logic, protection of the TCP window scaling option <a href="#RFC1323">[RFC1323]</a> and the selective acknowledgment (SACK) option <a href="#RFC2018">[RFC2018]</a> are not made mandatory.  These SHOULD NOT be added to the list of protected options <a href="#protected-options">Section 3.2</a>.</p>
+<h1 id="rfc.section.6.3"><a href="#rfc.section.6.3">6.3.</a> <a href="#interaction-with-dtls-replay-protection" id="interaction-with-dtls-replay-protection">Interaction with DTLS Replay Protection</a></h1>
+<p id="rfc.section.6.3.p.1">TCP segment retransmission and reassembly requires that a sender be able to retransmit.  These frames will be retransmitted with the same data, including the DTLS serial number.  To avoid having retransmissions erroneously discarded, any DTLS replay protection needs to allow for replay of records that appear in unacknowledged segments.</p>
+<h1 id="rfc.section.6.4"><a href="#rfc.section.6.4">6.4.</a> <a href="#tcp-keep-alive" id="tcp-keep-alive">TCP Keep-Alive</a></h1>
+<p id="rfc.section.6.4.p.1">This protocol does not protect TCP keep-alive segments <a href="#RFC1122">[RFC1122]</a>; that is, segments that are sent purely to ensure that the connection is maintained through middleboxes.  These can contain a single junk byte from just prior to the start of the congestion window.  These segments are discarded without being validated.</p>
+<p id="rfc.section.6.4.p.2">This differs from <a href="#I-D.bittau-tcp-crypt">[I-D.bittau-tcp-crypt]</a>, which protects keep-alive segments.  Protection ensures that an attacker is unable to prolong the lifetime of a connection that is otherwise unwanted.</p>
+<p id="rfc.section.6.4.p.3">Since an unwanted connection can be terminated with an authenticated segment that bears a FIN or RST bit, this concern is unwarranted.</p>
+<h1 id="rfc.section.6.5"><a href="#rfc.section.6.5">6.5.</a> <a href="#unprotected-rst-segments" id="unprotected-rst-segments">Unprotected RST Segments</a></h1>
+<p id="rfc.section.6.5.p.1">Existing TCP implementations, particularly middleboxes rely TCP RST to terminate connections that are .  An implementation MAY choose to respect an unauthenticated RST to permit these uses.</p>
+<p id="rfc.section.6.5.p.2">(Note: we may want to provide an option that the middlebox can include in a RST to prove that it is on-path to make this a little easier to accept.)</p>
+<h1 id="rfc.section.6.6"><a href="#rfc.section.6.6">6.6.</a> <a href="#cipher-suite-selection" id="cipher-suite-selection">Cipher Suite Selection</a></h1>
+<p id="rfc.section.6.6.p.1">Implementations MUST support the TLS_BLAH_WITH_BLAH_BLAH cipher suite.</p>
+<p id="rfc.section.6.6.p.2">Implementations MUST NOT offer non-AEAD modes and MUST terminate the connection if a non-AEAD mode if one is erroneously offered.</p>
+<h1 id="rfc.section.7"><a href="#rfc.section.7">7.</a> <a href="#security" id="security">Security Considerations</a></h1>
+<p id="rfc.section.7.p.1">None of this document mandates any level of authentication for peers, which opens up all sorts of active attacks.</p>
+<h1 id="rfc.section.7.1"><a href="#rfc.section.7.1">7.1.</a> <a href="#napt" id="napt">NAPT</a></h1>
+<p id="rfc.section.7.1.p.1">The choice to protect a TCP connection from addressing modification prevents network address and port translation from altering the addressing information on a connection.  Unfortunately, this is a procedure that much of the Internet relies on.  Enabling this feature is likely to break a lot of uses, but failure to use it exposes the connection to trivial re-routing attacks.</p>
+<p id="rfc.section.7.1.p.2">In the absence of peer authentication, and where there is a high level of assurance that no NAPT is being used for a communications path, this protection might be used.  Of course, any protection this provides is trivially circumvented by an on-path attacker.</p>
+<h1 id="rfc.section.7.2"><a href="#rfc.section.7.2">7.2.</a> <a href="#security-ack-window" id="security-ack-window">Acknowledgments and Congestion Window Protection</a></h1>
+<p id="rfc.section.7.2.p.1">This design permits a middlebox to generate acknowledgments and to perform repacketization.  This opens a number of denial of service avenues for malicious middleboxes.  Falsifying window advertisements can cause a sender to send more packets than might otherwise be sent.  Similarly, sending a reduced acknowledgment sequence number can cause excessive retransmission.  In a similar fashion, retransmissions can be suppressed by sending inflated acknowledgment sequence numbers.</p>
+<p id="rfc.section.7.2.p.2">These are options that are already available to an on-path attacker.</p>
+<h1 id="rfc.section.7.3"><a href="#rfc.section.7.3">7.3.</a> <a href="#traffic-redirection" id="traffic-redirection">Traffic Redirection</a></h1>
+<p id="rfc.section.7.3.p.1">Without the FORBID_NAPT flag enabled, it&#8217;s possible for a middlebox to rewrite addressing information so that this flow.  If only authenticated RST and FIN segments are accepted by the TCP stack, the target of this flow - who doesn&#8217;t have access to the traffic keys - is unable to do anything to end the flow of data.</p>
+<p id="rfc.section.7.3.p.2">This isn&#8217;t particularly interesting as an attack, since we have to assume that any middlebox capable of this is also capable of just generating the same volume of packets toward the victim.</p>
+<h1 id="rfc.section.7.4"><a href="#rfc.section.7.4">7.4.</a> <a href="#peer-authentication" id="peer-authentication">Peer Authentication</a></h1>
+<p id="rfc.section.7.4.p.1">In order to have this deployed, peers will have to avoid relying on authentication.  That means that this is open to active attacks.</p>
+<p id="rfc.section.7.4.p.2">Implementations might consider using some form of key continuity.  Clients SHOULD avoid key continuity for different servers to avoid tracking by correlating keying material.  Full continuity might be more applicable for servers, where key continuity does not create any special tracking ability.</p>
+<p id="rfc.section.7.4.p.3">(This probably needs work.)</p>
+<h1 id="rfc.section.8"><a href="#rfc.section.8">8.</a> <a href="#iana" id="iana">IANA Considerations</a></h1>
+<p id="rfc.section.8.p.1">This document registers a new TCP option kind, and establishes a registry to maintain its contents.</p>
+<h1 id="rfc.section.8.1"><a href="#rfc.section.8.1">8.1.</a> <a href="#registration-of-dtls-record-protection-option-kind" id="registration-of-dtls-record-protection-option-kind">Registration of DTLS Record Protection Option Kind</a></h1>
+<p id="rfc.section.8.1.p.1">This document registers the DTLS record protection option with a TCP option kind of 0xTBD.</p>
+<p id="rfc.section.8.1.p.2">The format of this option is described in <a href="#option">Section 3</a></p>
+<h1 id="rfc.section.8.2"><a href="#rfc.section.8.2">8.2.</a> <a href="#iana-flags" id="iana-flags">Registry for DTLS Record Protection Flags</a></h1>
+<p id="rfc.section.8.2.p.1">IANA will maintain a registry of &#8220;TCP DTLS Record Protection Flags&#8221; under the &#8220;Service Names and Transport Protocol Port Numbers&#8221; group of registries.</p>
+<p id="rfc.section.8.2.p.2">This registry controls a contiguous space starting from bit 0 to 2023 (inclusive).  New registrations in this registry require IETF review <a href="#RFC5226">[RFC5226]</a>, with the following information:</p>
+<p/>
+
+<dl>
+  <dt>Bit Number:</dt>
+  <dd style="margin-left: 8">The bit number being assigned</dd>
+  <dt>Purpose:</dt>
+  <dd style="margin-left: 8">A brief description of the feature.</dd>
+  <dt>Specification:</dt>
+  <dd style="margin-left: 8">A reference to the specification that defines the feature.</dd>
+</dl>
+<p id="rfc.section.8.2.p.4">The initial contents of this registry are:</p>
+<p/>
+
+<dl>
+  <dt>Bit Number:</dt>
+  <dd style="margin-left: 8">0</dd>
+  <dt>Purpose:</dt>
+  <dd style="margin-left: 8">Enables protection of addressing information.</dd>
+  <dt>Specification:</dt>
+  <dd style="margin-left: 8">This document.</dd>
+</dl>
+<h1 id="rfc.references"><a href="#rfc.references">9.</a> References</h1>
+<h1 id="rfc.references.1"><a href="#rfc.references.1">9.1.</a> Normative References</h1>
+<table>
+  <tbody>
+    <tr>
+      <td class="reference">
+        <b id="RFC0793">[RFC0793]</b>
+      </td>
+      <td class="top"><a title="University of Southern California (USC)/Information Sciences Institute">Postel, J.</a>, "<a href="http://tools.ietf.org/html/rfc793">Transmission Control Protocol</a>", STD 7, RFC 793, September 1981.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC1122">[RFC1122]</b>
+      </td>
+      <td class="top"><a href="mailto:Braden@ISI.EDU" title="University of Southern California (USC)/ Information Sciences Institute (ISI)">Braden, R.</a>, "<a href="http://tools.ietf.org/html/rfc1122">Requirements for Internet Hosts - Communication Layers</a>", STD 3, RFC 1122, October 1989.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC2119">[RFC2119]</b>
+      </td>
+      <td class="top"><a href="mailto:sob@harvard.edu" title="Harvard University">Bradner, S.</a>, "<a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, March 1997.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC2460">[RFC2460]</b>
+      </td>
+      <td class="top"><a href="mailto:deering@cisco.com" title="Cisco Systems, Inc.">Deering, S.</a> and <a href="mailto:hinden@iprg.nokia.com" title="Nokia">R. Hinden</a>, "<a href="http://tools.ietf.org/html/rfc2460">Internet Protocol, Version 6 (IPv6) Specification</a>", RFC 2460, December 1998.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC2780">[RFC2780]</b>
+      </td>
+      <td class="top"><a href="mailto:sob@harvard.edu" title="Harvard University">Bradner, S.</a> and <a href="mailto:vern@aciri.org" title="ACIRI / ICSI">V. Paxson</a>, "<a href="http://tools.ietf.org/html/rfc2780">IANA Allocation Guidelines For Values In the Internet Protocol and Related Headers</a>", BCP 37, RFC 2780, March 2000.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC5226">[RFC5226]</b>
+      </td>
+      <td class="top"><a>Narten, T.</a> and <a>H. Alvestrand</a>, "<a href="http://tools.ietf.org/html/rfc5226">Guidelines for Writing an IANA Considerations Section in RFCs</a>", BCP 26, RFC 5226, May 2008.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC5246">[RFC5246]</b>
+      </td>
+      <td class="top"><a>Dierks, T.</a> and <a>E. Rescorla</a>, "<a href="http://tools.ietf.org/html/rfc5246">The Transport Layer Security (TLS) Protocol Version 1.2</a>", RFC 5246, August 2008.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC6347">[RFC6347]</b>
+      </td>
+      <td class="top"><a>Rescorla, E.</a> and <a>N. Modadugu</a>, "<a href="http://tools.ietf.org/html/rfc6347">Datagram Transport Layer Security Version 1.2</a>", RFC 6347, January 2012.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.references.2"><a href="#rfc.references.2">9.2.</a> Informative References</h1>
+<table>
+  <tbody>
+    <tr>
+      <td class="reference">
+        <b id="I-D.bellovin-tcpsec">[I-D.bellovin-tcpsec]</b>
+      </td>
+      <td class="top"><a>Bellovin, S.</a>, "<a href="http://tools.ietf.org/html/draft-bellovin-tcpsec-01">Problem Statement and Requirements for a TCP Authentication Option</a>", Internet-Draft draft-bellovin-tcpsec-01, July 2007.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="I-D.bittau-tcp-crypt">[I-D.bittau-tcp-crypt]</b>
+      </td>
+      <td class="top"><a>Bittau, A.</a>, <a>Boneh, D.</a>, <a>Hamburg, M.</a>, <a>Handley, M.</a>, <a>Mazieres, D.</a> and <a>Q. Slack</a>, "<a href="http://tools.ietf.org/html/draft-bittau-tcp-crypt-04">Cryptographic protection of TCP Streams (tcpcrypt)</a>", Internet-Draft draft-bittau-tcp-crypt-04, February 2014.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="I-D.ietf-tcpm-fastopen">[I-D.ietf-tcpm-fastopen]</b>
+      </td>
+      <td class="top"><a>Cheng, Y.</a>, <a>Chu, J.</a>, <a>Radhakrishnan, S.</a> and <a>A. Jain</a>, "<a href="http://tools.ietf.org/html/draft-ietf-tcpm-fastopen-08">TCP Fast Open</a>", Internet-Draft draft-ietf-tcpm-fastopen-08, March 2014.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC1323">[RFC1323]</b>
+      </td>
+      <td class="top"><a href="mailto:van@CSAM.LBL.GOV" title="University of California Berkeley, Lawrence Berkeley Laboratory">Jacobson, V.</a>, <a href="mailto:Braden@ISI.EDU" title="University of Southern California (USC), Information Sciences Institute">Braden, B.</a> and <a href="mailto:dab@cray.com" title="Cray Research">D. Borman</a>, "<a href="http://tools.ietf.org/html/rfc1323">TCP Extensions for High Performance</a>", RFC 1323, May 1992.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC2018">[RFC2018]</b>
+      </td>
+      <td class="top"><a href="mailto:mathis@psc.edu" title="Pittsburgh Supercomputing Center">Mathis, M.</a>, <a href="mailto:mahdavi@psc.edu" title="Pittsburgh Supercomputing Center">Mahdavi, J.</a>, <a href="mailto:floyd@ee.lbl.gov" title="Lawrence Berkeley National Laboratory">Floyd, S.</a> and <a href="mailto:allyn@eng.sun.com" title="Sun Microsystems, Inc.">A. Romanow</a>, "<a href="http://tools.ietf.org/html/rfc2018">TCP Selective Acknowledgment Options</a>", RFC 2018, October 1996.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC7258">[RFC7258]</b>
+      </td>
+      <td class="top"><a>Farrell, S.</a> and <a>H. Tschofenig</a>, "<a href="http://tools.ietf.org/html/rfc7258">Pervasive Monitoring Is an Attack</a>", BCP 188, RFC 7258, May 2014.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.authors">
+  <a href="#rfc.authors">Author's Address</a>
+</h1>
+<div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Martin Thomson</span> 
+	  <span class="n hidden">
+		<span class="family-name">Thomson</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Mozilla</span>
+	<span class="adr">
+	  
+	  <span class="vcardline">
+		<span class="locality"></span> 
+		<span class="region"></span>
+		<span class="code"></span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:martin.thomson@gmail.com">martin.thomson@gmail.com</a></span>
+
+  </address>
+</div>
+
+</body>
+</html>
