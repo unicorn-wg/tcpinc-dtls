@@ -1,6 +1,6 @@
 # DTLS Mapping for TCP
 
-This is the working proposal for using DTLS to opportunistically secure TCP.
+This is a proposal for using DTLS to opportunistically secure TCP.
 
 * [Editor's copy](https://unicorn-wg.github.io/tcpinc-dtls/)
 * [Working Group Draft] (https://tools.ietf.org/html/draft-tcpinc-dtls)
