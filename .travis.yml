@@ -9,12 +9,12 @@ install:
 script: make ghpages
 env:
   global:
-  - secure: fswd9+ThMqdx9prZ2mCPkdQLLrN/xLrNsAq5QAV/iBMTAjQ0vE4/9SdkyZuXMncMYKffftFYXTlJ0gJwQkavg/IxlItNd4t2q468yWj3U0iij3SZ/4zlW+z2VsXHcLxnvQBt48MLw+vMDkAuqlyuQHASz+3GmCxsD48t5iBh5yk=
+  - secure: G3xXJc3iFBqSIniOz0eZ49DtiHgxXlrKrrKXftyUwvIjmQayUb6gNsq3Jml0kHJXFNcLhbEKs2puN2FtQzGFah09C8anrXu83bdsGmNlyylGoYUZumgl6Yje4zBPqe0xxxz0Aie861HP5CY6ubuQWsXtHho68otYPcpyPpu9EK8=
 before_deploy: make submit
 deploy:
   provider: releases
   api-key:
-    secure: "WMKW3UtGhrqiXh+yNl0aYWVIXJ9peeMQa9XqfykW0HxlK97N5LNBqij9DS6g0TdFsKXbrw89JnC5dGRIsKuBEgUWyb34wwZSYppJn0+vbMB/dIH/olTrVtMTloN3h/WsSM55gN076l0is3kQevsczGOpSn+GkqlRsu1P6/xzf34="
+    secure: ftBfSPN94sD5dhGBcU6c60vid3bAczGGEz23g9rxUsOwAI0MUgI7wHS5meYNPwTX/d4s418pf/RaK7oG3tf5JH7atHaABVWuqx4+9GhLyEh1lE0ZBNmsiCOjyQ4mJ/miifJ1idR6i1GWZBnS1kXZX1E1vZJybLeEo0Z1A83DwiA=
   file:
   - $TRAVIS_TAG.txt
   - $TRAVIS_TAG.html
