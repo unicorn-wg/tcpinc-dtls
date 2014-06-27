@@ -1,0 +1,26 @@
+language: python
+before_install:
+- sudo apt-get update -qq
+- sudo apt-get install -y python-lxml python-pip
+install:
+- deactivate
+- gem install kramdown-rfc2629
+- sudo pip install xml2rfc
+script: make ghpages
+env:
+  global:
+  - secure: sHVG4yOrWodDNUYPEaRo5qaTFP8IDM0qP2VXDU+8VD1Yc5IG3YYWs1AP64+xA3ehMuEHMgJ9g4mq3tELtUbxY51XzMupxCUBdR4FZ/DVsRYT3u4WKXTJqg6dDTjRTXNqo5FULLOXci4DXWbzhiG98J4g0egfiw3pYGNS0LRLki0=
+
+before_deploy: make submit
+deploy:
+  provider: releases
+  api-key:
+    secure: "clXgCByQhak2/rqYVeRyfQ56AvaXkVtPhlAAdlKFQ+DBY/rVVtvI3SfNVCqYOqEGe3CoId7kFliHBqNmaahw9QBVUzrYakkmzeFmOyHr052ctBN+96IBlIyzuvURg5RNO35MuenfZZHM7F1MJw5ulqHwAh7PqCKRbGPAs9p3hDk="
+  file:
+  - $TRAVIS_TAG.txt
+  - $TRAVIS_TAG.html
+  - $TRAVIS_TAG.xml
+  skip_cleanup: true
+  on:
+    branch: master
+    tags: true
