@@ -176,8 +176,7 @@ protected TCP options, this demands no additional calculation.  However, a
 receiver needs to construct the TCP header and pseudoheader.  The length of this
 packet is based on the length of the DTLS record, with the value of protected
 TCP options being extracted from the TCP header of the segment that carries the
-first byte of the DTLS record (or should this be last byte?  pick one, I
-guess?).
+first byte of the DTLS record.
 
 In TLS and DTLS, the additional data that is protected by the AEAD function
 is {{RFC5246}}:
