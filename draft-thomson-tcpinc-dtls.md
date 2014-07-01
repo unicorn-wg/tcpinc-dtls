@@ -318,6 +318,41 @@ This section outlines a number of considerations that allow this protocol to
 actually be implemented.
 
 
+## TCP Stream Consistency and Middleboxes
+
+TCP segments may be refragmented or coalesced when retransmitted. There
+are three primary approaches one can take to dealing with this:
+
+1. Send a consistent stream of TCP payloads and live with
+   protected records that either span TCP segments or are broken
+   between them.
+1. Split the data between the payload and metadata (options) so that
+   the TCP payload is consistent but the options are consistent.
+1. Send individual protected segments and recompute the
+   payloads on retransmission, thus making the stream inconsistent.
+
+Each of these approaches has advantages.
+
+Ordinary TLS over TCP takes the first option. This is arguably
+architecturally cleanest because it layers the security protocol over
+top of the transport. Thus, it just uses TCP options to negotiate TLS
+but otherwise looks the same as existing applications.  However, it
+does not permit protection of any of the TCP metadata (although one
+could potentially provide such protection by providing a separate
+integrity check for the TCP metadata in an option).
+
+{{I-D.bittau-tcp-crypt}} takes the second option.
+This provides the most resistance to middleboxes which want to
+do protocol enforcement or re-framing. However, it is an open
+question whether there is any significant fraction of middleboxes
+which will accept random appearing data with TCP options but
+do this kind of reframing or TCP consistency checks.
+
+This draft takes option 3, which is a compromise. It allows
+segments to be individually processed and metadata protected,
+but at the cost of TCP stream consistency.
+
+
 ## Zero Length DTLS Data
 
 {{RFC5246}}, Section 6.2 notes that the TLS record layer protects non-zero
@@ -370,7 +405,10 @@ that bears a FIN or RST bit, this concern is unwarranted.
 ## Unprotected RST Segments
 
 Existing TCP implementations, particularly middleboxes rely TCP RST to terminate
-connections that are .  An implementation MAY choose to respect an
+connections. If RST authentication is required, then it becomes impossible for
+a node which is not part of the association (either because it is a middlebox
+or because it is a legitimate endpoint which has lost state) to terminate
+the connection. An implementation MAY choose to respect an
 unauthenticated RST to permit these uses.
 
 (Note: we may want to provide an option that the middlebox can include in a RST
